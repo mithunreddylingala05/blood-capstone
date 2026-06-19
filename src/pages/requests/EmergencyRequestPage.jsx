@@ -2,14 +2,12 @@ import { useState } from 'react'
 import { useAuthStore } from '../../store/authStore'
 import { useRequestStore } from '../../store/requestStore'
 import { BLOOD_GROUPS, URGENCY_LEVELS } from '../../utils/constants'
-import { Siren, Info, CheckCircle } from 'lucide-react'
+import { Siren, Info, CheckCircle2, ArrowRight, Activity, MapPin, User, Heart } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 export default function EmergencyRequestPage() {
   const { user } = useAuthStore()
   const { createRequest, loading } = useRequestStore()
-
-  const isHospital = user?.role === 'hospital' || user?.role === 'blood_bank'
 
   const [form, setForm] = useState({
     patientName: '',
@@ -46,16 +44,18 @@ export default function EmergencyRequestPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-6 w-full max-w-7xl mx-auto">
-        <div className="bg-white rounded-3xl p-8 text-center shadow-sm border border-gray-100 w-full">
-          <CheckCircle size={64} className="text-green-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-black text-gray-900 mb-2">Alert Broadcasted!</h2>
-          <p className="text-gray-500 text-sm leading-relaxed mb-6">
-            Your emergency request has been sent to all donors in your area. Please stay by your phone.
+      <div className="min-h-screen bg-emerald-50 flex flex-col items-center justify-center px-6 pt-16 pb-20 animate-fade-in">
+        <div className="bg-white rounded-[40px] p-10 text-center shadow-card border border-emerald-100 w-full max-w-sm">
+          <div className="w-20 h-20 bg-emerald-500 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-hero shadow-emerald-200">
+            <CheckCircle2 size={40} className="text-white" />
+          </div>
+          <h2 className="text-2xl font-heading text-slate-900 mb-4 leading-tight">SOS Sent!</h2>
+          <p className="text-slate-500 text-sm font-medium leading-relaxed mb-8">
+            Your emergency request has been broadcasted to all donors in your area.
           </p>
           <button onClick={() => { setSuccess(false); setForm({ patientName: '', bloodGroup: 'A+', hospitalName: '', emergencyContact: user?.phone || '', units: 1, urgency: 0 }) }}
-            className="w-full bg-primary text-white py-3.5 rounded-2xl font-bold hover:bg-primary-dark transition-colors">
-            Post Another Request
+            className="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-subtle flex items-center justify-center gap-2 group">
+            New Request <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
       </div>
@@ -63,109 +63,160 @@ export default function EmergencyRequestPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full max-w-7xl mx-auto">
+    <div className="min-h-screen bg-slate-50 pb-32">
       {/* Header */}
-      <div className="bg-primary px-5 pt-14 pb-6 relative overflow-hidden">
-        <Siren size={120} className="absolute -right-6 -top-4 text-white/10" />
-        <h1 className="text-white text-2xl font-black">Emergency SOS</h1>
-        <p className="text-white/70 text-sm mt-1">Broadcast to all donors within 50km</p>
+      <div className="bg-white px-6 pt-16 pb-12 border-b border-slate-100 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-24 bg-primary/10 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2 animate-pulse" />
+        <div className="max-w-4xl mx-auto relative z-10 flex items-center gap-6">
+            <div className="w-16 h-16 bg-primary rounded-3xl flex items-center justify-center text-white shadow-hero animate-bounce-slow">
+                <Siren size={32} />
+            </div>
+            <div>
+                <h1 className="text-3xl font-heading text-slate-900 leading-tight">Emergency SOS</h1>
+                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.2em]">Network-wide Priority Alert</p>
+            </div>
+        </div>
       </div>
 
-      <div className="px-4 py-5 flex flex-col gap-5 pb-24">
-        {/* Alert banner */}
-        <div className="bg-red-50 border border-red-100 rounded-2xl p-4 flex gap-3">
-          <Info size={18} className="text-primary flex-shrink-0 mt-0.5" />
-          <p className="text-primary text-xs font-semibold leading-relaxed">
-            Broadcasting this request will alert all eligible donors within 50km immediately.
+      <div className="max-w-xl mx-auto px-6 py-10 space-y-8 animate-fade-in">
+        {/* Warning Banner */}
+        <div className="bg-rose-50/50 border border-rose-100 rounded-[32px] p-6 flex gap-4">
+          <Info size={20} className="text-primary flex-shrink-0" />
+          <p className="text-primary text-[10px] font-black uppercase tracking-widest leading-normal">
+            Real-time broadcast will alert 100+ local donors immediately. Only for priority cases.
           </p>
         </div>
 
-        {/* Patient Info */}
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-            <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Patient Information</span>
-          </div>
-          <div className="divide-y divide-gray-50">
-            <input value={form.patientName} onChange={e => set('patientName', e.target.value)}
-              placeholder="Patient Full Name"
-              className="w-full px-4 py-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-red-50/30 transition" />
-            <div className="p-4">
-              <p className="text-xs font-semibold text-gray-500 mb-3">Blood Group Required</p>
-              <div className="flex flex-wrap gap-2">
-                {BLOOD_GROUPS.map(g => (
-                  <button key={g} type="button" onClick={() => set('bloodGroup', g)}
-                    className={`w-14 h-10 rounded-xl text-sm font-black border transition-all ${form.bloodGroup === g ? 'bg-primary text-white border-primary' : 'bg-gray-50 text-gray-800 border-gray-100'}`}>
-                    {g}
-                  </button>
-                ))}
-              </div>
+        {/* Patient Details */}
+        <div className="bg-white p-8 rounded-[40px] shadow-card border border-slate-100 space-y-8">
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <User size={16} />
+                </div>
+                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Patient Details</h3>
             </div>
-          </div>
+            
+            <div className="space-y-6">
+                <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+                    <input 
+                        value={form.patientName} 
+                        onChange={e => set('patientName', e.target.value)}
+                        placeholder="Legal name of patient"
+                        className="w-full px-6 py-4 bg-slate-50 rounded-2xl text-sm font-medium border-0 focus:ring-4 ring-primary/10 transition-all placeholder:text-slate-300" 
+                    />
+                </div>
+
+                <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Required Blood Group</label>
+                    <div className="grid grid-cols-4 gap-2">
+                        {BLOOD_GROUPS.map(g => (
+                            <button 
+                                key={g} 
+                                type="button" 
+                                onClick={() => set('bloodGroup', g)}
+                                className={`h-11 rounded-2xl text-xs font-black border transition-all ${form.bloodGroup === g ? 'bg-primary text-white border-primary shadow-hero' : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50'}`}
+                            >
+                                {g}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {/* Location & Contact */}
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-            <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Location & Contact</span>
-          </div>
-          <div className="divide-y divide-gray-50">
-            <input value={form.hospitalName} onChange={e => set('hospitalName', e.target.value)}
-              placeholder="Hospital Name"
-              className="w-full px-4 py-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-red-50/30 transition" />
-            <input value={form.emergencyContact} onChange={e => set('emergencyContact', e.target.value)}
-              placeholder="Emergency Contact Number" type="tel"
-              className="w-full px-4 py-4 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-red-50/30 transition" />
-          </div>
+        {/* Hospital & Pulse */}
+        <div className="bg-white p-8 rounded-[40px] shadow-card border border-slate-100 space-y-8">
+            <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <MapPin size={16} />
+                </div>
+                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">Facility & Impact</h3>
+            </div>
+            
+            <div className="space-y-6">
+                <div className="grid grid-cols-1 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Hospital / Clinic</label>
+                        <input 
+                            value={form.hospitalName} 
+                            onChange={e => set('hospitalName', e.target.value)}
+                            placeholder="Admitted hospital name"
+                            className="w-full px-6 py-4 bg-slate-50 rounded-2xl text-sm font-medium border-0 focus:ring-4 ring-primary/10 transition-all placeholder:text-slate-300" 
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Emergency Contact</label>
+                        <input 
+                            value={form.emergencyContact} 
+                            onChange={e => set('emergencyContact', e.target.value)}
+                            placeholder="+XX 00000 00000"
+                            type="tel"
+                            className="w-full px-6 py-4 bg-slate-50 rounded-2xl text-sm font-medium border-0 focus:ring-4 ring-primary/10 transition-all placeholder:text-slate-300" 
+                        />
+                    </div>
+                </div>
+
+                <div className="pt-2">
+                    <div className="flex items-center justify-between mb-4">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Units Needed</label>
+                        <span className="text-xs font-black text-primary bg-primary/10 px-3 py-1 rounded-full">{form.units} Units</span>
+                    </div>
+                    <div className="flex gap-2">
+                        {[1, 2, 3, 4, 5].map(n => (
+                            <button 
+                                key={n} 
+                                onClick={() => set('units', n)}
+                                className={`flex-1 h-12 rounded-2xl text-xs font-black transition-all ${form.units === n ? 'bg-slate-900 text-white shadow-subtle' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                            >
+                                {n === 5 ? '5+' : n}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {/* Request Details */}
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-            <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Request Details</span>
-          </div>
-          <div className="p-4 divide-y divide-gray-50 flex flex-col gap-4">
-            {/* Units */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-semibold text-gray-500">Units Required</p>
-                <span className="text-xs font-black text-primary">{form.units} Unit{form.units > 1 ? 's' : ''}</span>
-              </div>
-              <div className="flex gap-2">
-                {[1, 2, 3, 4, 5].map(n => (
-                  <button key={n} onClick={() => set('units', n)}
-                    className={`flex-1 h-11 rounded-xl text-sm font-black transition-all ${form.units === n ? 'bg-primary text-white' : 'bg-gray-50 text-gray-800'}`}>
-                    {n === 5 ? '5+' : n}
-                  </button>
-                ))}
-              </div>
+        {/* Urgency Matrix */}
+        <div className="px-1">
+            <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 ml-1 flex items-center gap-2">
+                <Activity size={14} className="text-primary" /> Priority Level
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {URGENCY_LEVELS.map(lvl => {
+                    const isActive = form.urgency === lvl.value
+                    return (
+                        <button 
+                            key={lvl.value} 
+                            onClick={() => set('urgency', lvl.value)}
+                            className={`p-4 rounded-3xl border flex flex-col items-center gap-2 transition-all ${isActive ? 'bg-white border-primary shadow-hero ring-4 ring-primary/5' : 'bg-white border-slate-100 opacity-60 grayscale hover:opacity-100 hover:grayscale-0'}`}
+                        >
+                            <span className="text-2xl">{lvl.emoji}</span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-primary' : 'text-slate-400'}`}>
+                                {lvl.label}
+                            </span>
+                        </button>
+                    )
+                })}
             </div>
-
-            {/* Urgency */}
-            <div className="pt-4">
-              <p className="text-xs font-semibold text-gray-500 mb-3">Urgency Level</p>
-              <div className="flex gap-2">
-                {URGENCY_LEVELS.map(lvl => (
-                  <button key={lvl.value} onClick={() => set('urgency', lvl.value)}
-                    style={form.urgency === lvl.value ? { backgroundColor: lvl.color, borderColor: lvl.color } : { borderColor: lvl.color + '40', backgroundColor: lvl.bg }}
-                    className={`flex-1 py-2.5 rounded-xl text-xs font-black border transition-all ${form.urgency === lvl.value ? 'text-white' : ''}`}
-                    style2={{ color: form.urgency === lvl.value ? '#fff' : lvl.color }}>
-                    <span style={{ color: form.urgency === lvl.value ? '#fff' : lvl.color }}>
-                      {lvl.emoji} {lvl.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Submit */}
-        <button onClick={handleSubmit} disabled={loading}
-          className="w-full bg-primary text-white py-5 rounded-2xl font-black text-base tracking-wide shadow-lg shadow-red-200 disabled:opacity-60 hover:bg-primary-dark transition-colors flex items-center justify-center gap-2">
+        <button 
+            onClick={handleSubmit} 
+            disabled={loading}
+            className="w-full bg-primary text-white py-6 rounded-[32px] font-heading text-xl shadow-hero hover:bg-rose-700 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-50 flex items-center justify-center gap-4 group"
+        >
           {loading ? (
-            <><span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Broadcasting...</>
+            <div className="flex items-center gap-2">
+                <div className="w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Broadcasting...</span>
+            </div>
           ) : (
-            <><Siren size={18} /> BROADCAST EMERGENCY</>
+            <>
+                <Heart size={24} className="group-hover:scale-125 transition-transform" fill="currentColor" /> 
+                BROADCAST SOS
+            </>
           )}
         </button>
       </div>

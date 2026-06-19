@@ -1,26 +1,28 @@
 import { Link } from 'react-router-dom'
-import { UserPlus, Hospital, ArrowLeft, CheckCircle } from 'lucide-react'
+import { UserPlus, Hospital, ArrowLeft, CheckCircle2, ChevronRight } from 'lucide-react'
 
 function TypeCard({ icon: Icon, iconColor, title, subtitle, description, points, to }) {
   return (
-    <Link to={to} className="block bg-white rounded-3xl border border-gray-100 p-5 shadow-sm active:scale-[0.98] transition-transform">
-      <div className="flex items-start gap-4 mb-4">
-        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 ${iconColor}`}>
-          <Icon size={28} />
+    <Link to={to} className="group block bg-white rounded-[40px] p-8 border border-slate-100 shadow-card hover:border-primary/20 transition-all duration-300">
+      <div className="flex items-start gap-5 mb-6">
+        <div className={`w-16 h-16 rounded-3xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110 group-hover:rotate-6 ${iconColor}`}>
+          <Icon size={32} />
         </div>
         <div className="flex-1">
-          <h2 className="font-black text-gray-900 text-lg">{title}</h2>
-          <p className="text-sm font-semibold" style={{ color: iconColor.includes('red') ? '#D32F2F' : '#1976D2' }}>{subtitle}</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">{subtitle}</p>
+          <h2 className="font-heading text-xl text-slate-900 leading-none">{title}</h2>
         </div>
-        <ArrowLeft size={16} className="text-gray-300 rotate-180 mt-1" />
+        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-primary group-hover:text-white transition-all">
+          <ChevronRight size={20} />
+        </div>
       </div>
 
-      <p className="text-sm text-gray-500 mb-4 leading-relaxed">{description}</p>
+      <p className="text-sm text-slate-500 mb-6 leading-relaxed font-medium">{description}</p>
 
-      <div className="border-t border-gray-100 pt-4 flex flex-col gap-2">
+      <div className="space-y-3 pt-6 border-t border-slate-50">
         {points.map((p, i) => (
-          <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-            <CheckCircle size={14} className="text-green-600 flex-shrink-0" />
+          <div key={i} className="flex items-start gap-3 text-xs font-bold text-slate-600">
+            <CheckCircle2 size={16} className="text-emerald-500 mt-0.5" />
             {p}
           </div>
         ))}
@@ -31,40 +33,42 @@ function TypeCard({ icon: Icon, iconColor, title, subtitle, description, points,
 
 export default function RegisterPage() {
   return (
-    <div className="min-h-screen bg-white w-full max-w-7xl mx-auto px-6">
-      <div className="pt-14 pb-6">
-        <Link to="/login" className="inline-flex items-center gap-2 text-gray-500 text-sm mb-8">
-          <ArrowLeft size={16} /> Back to Login
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center px-6 pt-16 pb-20">
+      <div className="w-full max-w-sm mb-12">
+        <Link to="/login" className="inline-flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-widest mb-10 hover:text-primary transition-colors">
+          <ArrowLeft size={16} /> Back to Entry
         </Link>
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Create Account</h1>
-        <p className="text-gray-500 mt-2 text-sm leading-relaxed">
-          Join our community to start saving lives today. Choose your account type.
+        <h1 className="text-4xl font-heading text-slate-900 leading-none mb-4">Join Us</h1>
+        <p className="text-slate-400 text-sm font-medium leading-relaxed">
+          Select how you want to contribute to the global life-saving network.
         </p>
       </div>
 
-      <div className="flex flex-col gap-4 pb-10">
+      <div className="w-full max-w-sm space-y-4">
         <TypeCard
           icon={UserPlus}
-          iconColor="bg-red-50 text-primary"
-          title="Donor / Patient"
-          subtitle="Become part of the life-saving network"
-          description="Ideal for individuals who want to donate blood or request help during emergencies."
-          points={['Find donors within 50km radius', 'Request blood in one tap', 'Digital donation tracking']}
+          iconColor="bg-primary/10 text-primary"
+          title="Citizen Donor"
+          subtitle="Life Saver"
+          description="Donate blood, track your contributions, and respond to local emergencies."
+          points={['Find donors within 50km', 'Instant emergency alerts', 'Personal donation diary']}
           to="/register/user"
         />
 
         <TypeCard
           icon={Hospital}
-          iconColor="bg-blue-50 text-blue-700"
-          title="Hospital / Blood Bank"
-          subtitle="Manage stock and emergency requests"
-          description="Designed for medical facilities to manage blood inventories and donor connections."
-          points={['Manage real-time blood stock', 'Post facility-wide requests', 'Direct donor communication']}
+          iconColor="bg-slate-900 text-white"
+          title="Clinical Partner"
+          subtitle="Healthcare"
+          description="Manage inventory, post urgent requests, and verify community donors."
+          points={['Live blood stock engine', 'Direct donor recruitment', 'Facility-wide reporting']}
           to="/register/hospital"
         />
-
-        <p className="text-center text-xs text-gray-400 mt-2">🔒 Secure & Encrypted Registration</p>
       </div>
+      
+      <p className="mt-12 text-[10px] font-black text-slate-300 uppercase tracking-widest">
+        SECURE COMMUNITY PLATFORM
+      </p>
     </div>
   )
 }

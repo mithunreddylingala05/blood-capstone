@@ -22,9 +22,10 @@ import NotificationsPage from './pages/notifications/NotificationsPage'
 import ProfilePage from './pages/profile/ProfilePage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import StateDirectoryPage from './pages/stats/StateDirectoryPage'
+import LandingPage from './pages/landing/LandingPage'
 
 export default function App() {
-  const { init, loading } = useAuthStore()
+  const { init, loading, user } = useAuthStore()
 
   useEffect(() => { init() }, [])
 
@@ -43,6 +44,7 @@ export default function App() {
       <ContactModal />
       <Routes>
         {/* Public */}
+        <Route path="/" element={user ? <Navigate to="/home" replace /> : <LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/register/user" element={<UserRegisterPage />} />
@@ -51,7 +53,7 @@ export default function App() {
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/search" element={<BloodSearchPage />} />
             <Route path="/emergency" element={<EmergencyRequestPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />

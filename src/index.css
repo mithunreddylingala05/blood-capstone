@@ -2,16 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
-* { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; }
+@layer base {
+  :root {
+    --primary: 354 70% 54%;
+    --font-heading: 'Outfit', sans-serif;
+    --font-sans: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  }
 
-body { 
-  background-color: #f8fafc; 
-  color: #0f172a;
-  -webkit-tap-highlight-color: transparent; 
-  -webkit-font-smoothing: antialiased;
+  * {
+    @apply border-slate-200;
+    font-family: var(--font-sans);
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    @apply font-bold tracking-tight text-slate-950;
+  }
 }
 
 @layer utilities {
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-subtle;
+  }
+
+  .lifeline-gradient {
+    @apply bg-gradient-to-br from-primary to-primary-dark;
+  }
 }

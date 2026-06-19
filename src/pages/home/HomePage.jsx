@@ -26,7 +26,7 @@ export default function HomePage() {
       <div className="bg-gradient-to-br from-primary via-primary-dark to-rose-900 px-6 pt-16 pb-12 relative overflow-hidden shadow-primary rounded-b-[40px] mb-6">
         <Droplets size={160} className="absolute -right-8 -top-8 text-white/5 rotate-12 blur-sm" />
         <div className="absolute top-0 left-0 w-full h-full bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
-        
+
         <div className="flex items-start justify-between mb-8 relative z-10">
           <div>
             <p className="text-rose-100 text-sm font-medium tracking-wide mb-1">Good day,</p>
@@ -67,7 +67,7 @@ export default function HomePage() {
         </div>
       </div>
 
-        <div className="px-5 py-2 flex flex-col gap-6">
+      <div className="px-5 py-2 flex flex-col gap-6">
         {/* Active request banner */}
         {latestRequest && (
           <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100/50 rounded-3xl p-5 shadow-soft hover:shadow-md transition-shadow">
@@ -89,7 +89,7 @@ export default function HomePage() {
             <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-rose-500 to-primary opacity-100 group-hover:opacity-90 transition-opacity"></div>
             <div className="absolute top-0 right-0 p-12 bg-white opacity-10 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2"></div>
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
-            
+
             <div className="relative p-6 flex items-center gap-5">
               <div className="w-16 h-16 bg-white shadow-xl rounded-full flex items-center justify-center flex-shrink-0 animate-pulse-soft border-4 border-rose-100">
                 <AlertCircle size={32} className="text-primary transform group-hover:scale-110 transition-transform duration-300" />
@@ -102,7 +102,7 @@ export default function HomePage() {
                 <p className="text-rose-100 text-sm font-semibold tracking-wide">Broadcast urgent blood request instantly</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm group-hover:bg-white/30 transition-colors">
-                 <ChevronRight size={24} className="text-white mix-blend-luminosity" />
+                <ChevronRight size={24} className="text-white mix-blend-luminosity" />
               </div>
             </div>
           </Link>

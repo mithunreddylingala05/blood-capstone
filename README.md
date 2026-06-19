@@ -1,6 +1,6 @@
 <div align="center">
 
-![Smart Blood Connect Banner](assets/banner.png)
+![Smart Blood Connect Banner](src/assets/banner.png)
 
 # 🩸 Smart Blood Connect
 

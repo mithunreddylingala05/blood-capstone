@@ -2,36 +2,20 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import { BLOOD_GROUPS } from '../../utils/constants'
-import {
-  User, Mail, Phone, MapPin, Droplets, Award, Star, LogOut,
-  Edit3, X, Check, Heart, Building2, ChevronRight, ToggleLeft, ToggleRight
-} from 'lucide-react'
+import { User, Mail, Phone, MapPin, Droplets, Award, Star, LogOut, Edit3, X, Check, Heart, Building2, ToggleLeft, ToggleRight, ArrowRight } from 'lucide-react'
 import { initials } from '../../utils/time'
 import toast from 'react-hot-toast'
 
 function InfoRow({ icon: Icon, label, value, isPrimary = false }) {
   return (
-    <div className="flex items-center gap-4 py-3.5 px-4">
-      <Icon size={18} className={isPrimary ? 'text-primary' : 'text-gray-400'} />
-      <span className="text-gray-500 text-sm flex-1">{label}</span>
-      <span className={`font-bold text-sm ${isPrimary ? 'text-primary' : 'text-gray-900'}`}>{value || '—'}</span>
-    </div>
-  )
-}
-
-function InfoCard({ children }) {
-  return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden divide-y divide-gray-50">
-      {children}
-    </div>
-  )
-}
-
-function SectionHeader({ icon: Icon, title }) {
-  return (
-    <div className="flex items-center gap-2 mb-3 px-1">
-      <Icon size={15} className="text-gray-400" />
-      <span className="text-xs font-black text-gray-500 uppercase tracking-widest">{title}</span>
+    <div className="flex items-center gap-4 py-4">
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isPrimary ? 'bg-primary/10 text-primary' : 'bg-slate-50 text-slate-400'}`}>
+        <Icon size={18} />
+      </div>
+      <div className="flex-1">
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">{label}</p>
+        <p className={`font-bold text-sm ${isPrimary ? 'text-primary' : 'text-slate-900'}`}>{value || '—'}</p>
+      </div>
     </div>
   )
 }
@@ -67,181 +51,167 @@ export default function ProfilePage() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full max-w-7xl mx-auto">
-      {/* Hero */}
-      <div className={`px-5 pt-14 pb-8 relative overflow-hidden ${isHospital ? 'bg-blue-700' : 'bg-primary'}`}>
-        <div className="flex flex-col items-center">
-          <div className={`w-20 h-20 rounded-full flex items-center justify-center text-3xl font-black mb-3 ${isHospital ? 'bg-blue-100 text-blue-700' : 'bg-white text-primary'}`}>
-            {isHospital ? '🏥' : initials(user.name)}
-          </div>
-          <h1 className="text-white text-xl font-black">{user.name}</h1>
-          <p className="text-white/70 text-sm mt-0.5">{isHospital ? 'Healthcare Partner' : 'Blood Donor'}</p>
+    <div className="min-h-screen bg-slate-50 pb-32">
+      {/* Profile Header */}
+      <div className="bg-white px-6 pt-16 pb-12 border-b border-slate-100 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-20 bg-primary/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+        
+        <div className="max-w-4xl mx-auto flex flex-col items-center relative z-10 text-center">
+            <div className="relative mb-6">
+                <div className="w-24 h-24 rounded-[32px] bg-primary rotate-12 absolute inset-0 blur-xl opacity-20" />
+                <div className="w-24 h-24 rounded-[32px] bg-white border-4 border-slate-50 flex items-center justify-center text-3xl font-heading text-primary relative shadow-hero">
+                    {isHospital ? '🏥' : initials(user.name)}
+                </div>
+            </div>
+            <h1 className="text-3xl font-heading text-slate-900 mb-1">{user.name}</h1>
+            <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">{isHospital ? 'Medical Partner' : 'Life Saver Member'}</p>
         </div>
       </div>
 
-      <div className="px-4 py-5 flex flex-col gap-5 pb-24">
-        {/* Donor stats */}
-        {!isHospital && (
-          <div className="flex gap-3">
-            {[
-              { icon: Heart, label: 'Donations', value: user.total_donations || 0, color: 'text-primary' },
-              { icon: Star,  label: 'Rating',    value: user.rating || 0,           color: 'text-yellow-500' },
-              { icon: Droplets, label: 'Blood Group', value: user.blood_group,     color: 'text-primary' },
-            ].map(({ icon: Icon, label, value, color }) => (
-              <div key={label} className="flex-1 bg-white rounded-2xl border border-gray-100 py-4 px-2 flex flex-col items-center gap-1.5">
-                <Icon size={18} className={color} />
-                <span className="font-black text-gray-900 text-lg leading-none">{value}</span>
-                <span className="text-gray-400 text-[10px]">{label}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Availability toggle */}
-        <div className={`rounded-2xl border p-4 flex items-center gap-4 ${user.is_available ? 'bg-green-50 border-green-100' : 'bg-gray-50 border-gray-100'}`}>
-          <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${user.is_available ? 'bg-green-500' : 'bg-gray-400'}`}>
-            {user.is_available ? <Check size={20} className="text-white" /> : <X size={20} className="text-white" />}
+      <div className="max-w-xl mx-auto px-6 py-10 space-y-8 animate-fade-in">
+        {/* Availability Card */}
+        <div className={`p-6 rounded-[32px] border flex items-center gap-4 transition-all ${user.is_available ? 'bg-emerald-50 border-emerald-100 shadow-sm' : 'bg-slate-100 border-slate-200'}`}>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${user.is_available ? 'bg-emerald-500 shadow-lg shadow-emerald-200' : 'bg-slate-400 opacity-50'}`}>
+            {user.is_available ? <Check size={24} className="text-white" /> : <X size={24} className="text-white" />}
           </div>
           <div className="flex-1">
-            <p className={`font-bold text-sm ${user.is_available ? 'text-green-800' : 'text-gray-700'}`}>
-              {user.is_available ? 'Available for Donation' : 'Currently Unavailable'}
+            <p className={`font-heading text-lg leading-tight ${user.is_available ? 'text-emerald-900' : 'text-slate-500'}`}>
+              {user.is_available ? 'Available Now' : 'Duty Off'}
             </p>
-            <p className="text-xs text-gray-500 mt-0.5">
-              {user.is_available ? 'Visible to those in need' : 'Hidden from search results'}
+            <p className="text-xs text-slate-400 font-medium mt-0.5">
+              {user.is_available ? 'You are visible to patients' : 'You are currently hidden'}
             </p>
           </div>
-          <button onClick={() => toggleAvailability()}>
+          <button onClick={() => toggleAvailability()} className="active:scale-90 transition-transform">
             {user.is_available
-              ? <ToggleRight size={32} className="text-green-500" />
-              : <ToggleLeft size={32} className="text-gray-300" />}
+              ? <ToggleRight size={48} className="text-emerald-500" strokeWidth={1} />
+              : <ToggleLeft size={48} className="text-slate-300" strokeWidth={1} />}
           </button>
         </div>
 
-        {/* Personal / Hospital Info */}
-        {!isHospital ? (
-          <>
-            <div>
-              <SectionHeader icon={User} title="Personal Information" />
-              <InfoCard>
-                <InfoRow icon={Mail} label="Email" value={user.email} />
-                <InfoRow icon={Phone} label="Phone" value={user.phone} />
-                <InfoRow icon={User} label="Role" value={user.role?.charAt(0).toUpperCase() + user.role?.slice(1)} />
-              </InfoCard>
-            </div>
-            <div>
-              <SectionHeader icon={Droplets} title="Blood Details" />
-              <InfoCard>
-                <InfoRow icon={Droplets} label="Blood Group" value={user.blood_group} isPrimary />
-                <InfoRow icon={Award} label="Total Donations" value={`${user.total_donations || 0} times`} />
-                <InfoRow icon={Star} label="Rating" value={user.rating > 0 ? `${user.rating} / 5.0` : 'New Member'} />
-              </InfoCard>
-            </div>
-          </>
-        ) : (
-          <div>
-            <SectionHeader icon={Building2} title="Hospital Information" />
-            <InfoCard>
-              <InfoRow icon={Building2} label="Name" value={user.name} />
-              <InfoRow icon={Mail} label="Email" value={user.email} />
-              <InfoRow icon={Phone} label="Phone" value={user.phone} />
-            </InfoCard>
-          </div>
-        )}
-
-        {/* Location */}
-        <div>
-          <SectionHeader icon={MapPin} title="Location" />
-          <InfoCard>
-            <InfoRow icon={MapPin} label="Address" value={user.location} />
-            <InfoRow icon={MapPin} label="State" value={user.state} />
-          </InfoCard>
-        </div>
-
-        {/* Hospital blood stock */}
-        {isHospital && (
-          <div>
-            <div className="flex items-center justify-between mb-3 px-1">
-              <div className="flex items-center gap-2">
-                <Droplets size={15} className="text-blue-500" />
-                <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Blood Stock</span>
-              </div>
-              <button onClick={() => setStockOpen(true)} className="text-blue-600 text-xs font-bold flex items-center gap-1">
-                <Edit3 size={12} /> Update
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {BLOOD_GROUPS.map(g => (
-                <div key={g} className={`px-3 py-2 rounded-xl border text-center ${(user.blood_stock?.[g] || 0) > 0 ? 'bg-blue-50 border-blue-100' : 'bg-gray-50 border-gray-100'}`}>
-                  <p className="font-black text-sm text-blue-700">{g}</p>
-                  <p className="text-xs text-gray-500">{user.blood_stock?.[g] || 0}u</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Action buttons */}
-        <div className="flex gap-3 pt-2">
-          <button onClick={() => setEditOpen(true)}
-            className="flex-1 flex items-center justify-center gap-2 border border-gray-200 py-3 rounded-2xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">
-            <Edit3 size={15} /> Edit Profile
-          </button>
-          <button onClick={handleLogout}
-            className="flex-1 flex items-center justify-center gap-2 bg-red-50 border border-red-100 py-3 rounded-2xl text-sm font-bold text-primary hover:bg-red-100 transition-colors">
-            <LogOut size={15} /> Logout
-          </button>
-        </div>
-      </div>
-
-      {/* Edit Profile Sheet */}
-      {editOpen && (
-        <div className="fixed inset-0 z-50 flex items-end" onClick={() => setEditOpen(false)}>
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative w-full bg-white rounded-t-3xl px-6 pt-8 pb-10 w-full max-w-7xl mx-auto" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-black text-gray-900 text-xl">Edit Profile</h3>
-              <button onClick={() => setEditOpen(false)}><X size={20} className="text-gray-400" /></button>
-            </div>
-            {[['Full Name', 'name'], ['Phone Number', 'phone'], ['Address', 'location'], ['State', 'state']].map(([label, key]) => (
-              <div key={key} className="mb-4">
-                <label className="text-xs font-semibold text-gray-500 mb-1.5 block">{label}</label>
-                <input value={editForm[key]} onChange={e => setEditForm(f => ({ ...f, [key]: e.target.value }))}
-                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-primary transition" />
-              </div>
-            ))}
-            <button onClick={handleSaveProfile}
-              className="w-full bg-primary text-white py-4 rounded-2xl font-bold hover:bg-primary-dark transition-colors">
-              Save Changes
+        {/* Info Grid */}
+        <div className="bg-white rounded-[40px] border border-slate-100 p-8 shadow-card space-y-6">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-heading">Personal Details</h2>
+            <button onClick={() => setEditOpen(true)} className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-primary transition-colors">
+              <Edit3 size={18} />
             </button>
           </div>
+
+          <div className="divide-y divide-slate-50">
+            <InfoRow icon={Mail} label="Email Address" value={user.email} />
+            <InfoRow icon={Phone} label="Phone Number" value={user.phone} />
+            {!isHospital && <InfoRow icon={Droplets} label="Blood Group" value={user.blood_group} isPrimary />}
+            <InfoRow icon={MapPin} label="Location" value={`${user.location}, ${user.state}`} />
+          </div>
+        </div>
+
+        {/* Stats Section */}
+        {!isHospital && (
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-card">
+              <Heart className="text-primary mb-3" size={24} />
+              <p className="text-2xl font-black text-slate-900">{user.total_donations || 0}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Donations</p>
+            </div>
+            <div className="bg-white p-6 rounded-[32px] border border-slate-100 shadow-card">
+              <Award className="text-amber-500 mb-3" size={24} />
+              <p className="text-2xl font-black text-slate-900">{user.rating > 0 ? user.rating : 'New'}</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Community Rank</p>
+            </div>
+          </div>
+        )}
+
+        {/* Logout */}
+        <button onClick={handleLogout} className="w-full py-5 rounded-[24px] border border-rose-100 bg-rose-50/50 text-primary font-bold text-sm hover:bg-rose-50 transition-all flex items-center justify-center gap-2 group">
+            <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" /> Sign Out
+        </button>
+      </div>
+
+      {/* Edit Profile Modal */}
+      {editOpen && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center px-4 pb-4 sm:pb-8">
+            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in" onClick={() => setEditOpen(false)} />
+            <div className="relative w-full max-w-sm bg-white rounded-[40px] p-8 shadow-hero animate-slide-up overflow-hidden">
+                <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xl font-heading text-slate-900">Update Profile</h3>
+                    <button onClick={() => setEditOpen(false)} className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                        <X size={20} />
+                    </button>
+                </div>
+                
+                <div className="space-y-4 mb-8">
+                    {[
+                        { label: 'Name', key: 'name', type: 'text' },
+                        { label: 'Phone', key: 'phone', type: 'tel' },
+                        { label: 'Address', key: 'location', type: 'text' },
+                        { label: 'State', key: 'state', type: 'text' }
+                    ].map((field) => (
+                        <div key={field.key} className="space-y-1.5">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">{field.label}</label>
+                            <input
+                                type={field.type}
+                                value={editForm[field.key]}
+                                onChange={e => setEditForm(f => ({ ...f, [field.key]: e.target.value }))}
+                                className="w-full px-4 py-3.5 bg-slate-50 rounded-2xl text-sm font-medium border-0 focus:ring-4 ring-primary/10 transition-all"
+                            />
+                        </div>
+                    ))}
+                </div>
+
+                <button onClick={handleSaveProfile} className="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-subtle">
+                    Save Changes
+                </button>
+            </div>
         </div>
       )}
 
-      {/* Blood Stock Update Sheet */}
+      {/* Blood Stock Update Modal */}
       {stockOpen && isHospital && (
-        <div className="fixed inset-0 z-50 flex items-end" onClick={() => setStockOpen(false)}>
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative w-full bg-white rounded-t-3xl px-6 pt-8 pb-10 w-full max-w-7xl mx-auto" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-black text-gray-900 text-xl">Update Blood Stock</h3>
-              <button onClick={() => setStockOpen(false)}><X size={20} className="text-gray-400" /></button>
-            </div>
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              {BLOOD_GROUPS.map(g => (
-                <div key={g} className="flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3">
-                  <span className="font-black text-primary w-8">{g}</span>
-                  <input type="number" min="0" value={stock[g] || 0}
-                    onChange={e => setStock(s => ({ ...s, [g]: parseInt(e.target.value) || 0 }))}
-                    className="flex-1 bg-transparent text-gray-900 font-bold text-center focus:outline-none" />
-                  <span className="text-gray-400 text-xs">units</span>
+        <div className="fixed inset-0 z-[60] flex items-end justify-center px-4 pb-4 sm:pb-8">
+            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in" onClick={() => setStockOpen(false)} />
+            <div className="relative w-full max-w-sm bg-white rounded-[40px] p-8 shadow-hero animate-slide-up overflow-hidden">
+                <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xl font-heading text-slate-900">Blood Inventory</h3>
+                    <button onClick={() => setStockOpen(false)} className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                        <X size={20} />
+                    </button>
                 </div>
-              ))}
+                
+                <div className="grid grid-cols-2 gap-3 mb-8">
+                    {BLOOD_GROUPS.map(g => (
+                        <div key={g} className="bg-slate-50 rounded-2xl p-4 flex flex-col items-center">
+                            <span className="text-xs font-black text-primary mb-1 uppercase tracking-tighter">{g}</span>
+                            <div className="flex items-center gap-2">
+                                <input 
+                                    type="number" 
+                                    min="0" 
+                                    value={stock[g] || 0}
+                                    onChange={e => setStock(s => ({ ...s, [g]: parseInt(e.target.value) || 0 }))}
+                                    className="bg-transparent text-slate-900 font-bold text-center w-10 focus:outline-none" 
+                                />
+                                <span className="text-[10px] font-bold text-slate-400">UNITS</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <button onClick={handleSaveStock} className="w-full bg-primary text-white py-4 rounded-2xl font-bold hover:bg-rose-700 transition-all shadow-subtle">
+                    Update Inventory
+                </button>
             </div>
-            <button onClick={handleSaveStock}
-              className="w-full bg-blue-700 text-white py-4 rounded-2xl font-bold hover:bg-blue-800 transition-colors">
-              Update Stock
+        </div>
+      )}
+
+      {/* Hospital Stock Trigger */}
+      {isHospital && (
+        <div className="fixed bottom-32 left-0 right-0 flex justify-center px-6 pointer-events-none">
+            <button 
+                onClick={() => setStockOpen(true)}
+                className="bg-primary text-white px-8 py-4 rounded-full font-bold shadow-hero pointer-events-auto flex items-center gap-2 animate-bounce-slow"
+            >
+                <Droplets size={20} /> Manage Blood Stock
             </button>
-          </div>
         </div>
       )}
     </div>

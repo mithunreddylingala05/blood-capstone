@@ -1,91 +1,87 @@
-import { Phone, MapPin, Star, Droplets, Award } from 'lucide-react'
+import { Phone, MapPin, Star, Award, MessageCircle, MoreVertical } from 'lucide-react'
 import BloodGroupBadge from './BloodGroupBadge'
 import { initials } from '../../utils/time'
 import { formatDistance } from '../../utils/distance'
 
 export default function DonorCard({ donor, isClosest = false, onContact }) {
   const isHospital = donor.role === 'hospital' || donor.role === 'blood_bank'
-  const accentColor = isHospital ? 'blue' : 'red'
 
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${isClosest ? 'border-primary' : 'border-gray-100'}`}>
-      {isClosest && (
-        <div className="bg-primary text-white text-xs font-bold text-center py-1">
-          📍 Closest Match
+    <div className={`bg-white rounded-[40px] p-6 border shadow-card transition-all duration-300 relative group overflow-hidden ${isClosest ? 'border-primary/20' : 'border-slate-100'}`}>
+      <div className="flex items-start gap-4">
+        {/* Avatar */}
+        <div className="relative">
+            <div className={`w-14 h-14 rounded-[22px] flex items-center justify-center font-heading text-xl flex-shrink-0 shadow-subtle ${isHospital ? 'bg-slate-900 text-white' : 'bg-primary/10 text-primary'}`}>
+                {isHospital ? '🏥' : initials(donor.name)}
+            </div>
+            {donor.is_available && (
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full border-4 border-white" />
+            )}
         </div>
-      )}
-      <div className="p-4">
-        <div className="flex items-start gap-3">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-lg flex-shrink-0 ${isHospital ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-primary'}`}>
-            {isHospital ? '🏥' : initials(donor.name)}
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <h3 className="text-lg font-heading text-slate-900 truncate">{donor.name}</h3>
+            {!isHospital && <BloodGroupBadge group={donor.blood_group} size="sm" />}
           </div>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap mb-1">
-              <h3 className="font-bold text-gray-900 truncate">{donor.name}</h3>
-              <BloodGroupBadge group={donor.blood_group} size="sm" />
-            </div>
-
-            <div className="flex items-center gap-1 text-gray-400 text-xs mb-2">
-              <MapPin size={11} />
-              <span className="truncate">{donor.location || donor.city}</span>
-              {donor.distance_km > 0 && (
-                <span className="ml-1 text-primary font-semibold">· {formatDistance(donor.distance_km)}</span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-3 text-xs text-gray-500">
-              {donor.total_donations > 0 && (
-                <span className="flex items-center gap-1">
-                  <Award size={11} className="text-primary" />
-                  {donor.total_donations} donations
-                </span>
-              )}
-              {donor.rating > 0 && (
-                <span className="flex items-center gap-1">
-                  <Star size={11} className="text-yellow-500" />
-                  {donor.rating.toFixed(1)}
-                </span>
-              )}
-            </div>
-
-            {/* Hospital blood stock */}
-            {isHospital && donor.blood_stock && (
-              <div className="mt-3 flex flex-wrap gap-1">
-                {Object.entries(donor.blood_stock).filter(([, v]) => v > 0).map(([g, u]) => (
-                  <span key={g} className="text-xs font-bold bg-blue-50 text-blue-700 px-2 py-0.5 rounded-lg border border-blue-100">
-                    {g}: {u}u
-                  </span>
-                ))}
-              </div>
+          <div className="flex items-center gap-1.5 text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">
+            <MapPin size={12} className="text-slate-300" />
+            <span className="truncate">{donor.location || donor.city}</span>
+            {donor.distance_km > 0 && (
+              <span className="text-primary tracking-normal font-black">· {formatDistance(donor.distance_km)}</span>
             )}
           </div>
 
-          <div className="flex flex-col items-end gap-2">
-            <span className={`text-xs font-bold px-2 py-1 rounded-full ${donor.is_available ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-              {donor.is_available ? '● Available' : '○ Busy'}
-            </span>
+          <div className="flex gap-4">
+              {donor.total_donations > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-full">
+                  <Award size={14} className="text-primary" />
+                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">{donor.total_donations} Saved</span>
+                </div>
+              )}
+              {donor.rating > 0 && (
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-full">
+                  <Star size={14} className="text-amber-500 fill-amber-500" />
+                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-tighter">{donor.rating.toFixed(1)}</span>
+                </div>
+              )}
           </div>
         </div>
+      </div>
 
-        <div className="mt-4 flex gap-2">
-          <a
-            href={`tel:${donor.phone}`}
-            onClick={() => onContact?.()}
-            className="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-2.5 rounded-xl text-sm font-bold hover:bg-primary-dark transition-colors"
-          >
-            <Phone size={14} />
-            Call Now
-          </a>
-          <a
-            href={`https://wa.me/${donor.phone?.replace(/\D/g,'')}`}
-            target="_blank"
-            rel="noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 bg-green-50 text-green-700 border border-green-100 py-2.5 rounded-xl text-sm font-bold hover:bg-green-100 transition-colors"
-          >
-            WhatsApp
-          </a>
+      {/* Hospital Stock Panel */}
+      {isHospital && donor.blood_stock && (
+        <div className="mt-6 flex flex-wrap gap-2 pt-4 border-t border-slate-50">
+          {Object.entries(donor.blood_stock).filter(([, v]) => v > 0).map(([g, u]) => (
+            <div key={g} className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 flex items-center gap-2">
+              <span className="text-[10px] font-black text-primary uppercase">{g}</span>
+              <span className="text-[10px] font-bold text-slate-400">{u}U</span>
+            </div>
+          ))}
         </div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="mt-6 flex gap-2">
+        <a
+          href={`tel:${donor.phone}`}
+          onClick={() => onContact?.()}
+          className="flex-1 bg-slate-900 text-white h-12 rounded-2xl flex items-center justify-center gap-2 text-sm font-bold shadow-subtle hover:bg-slate-800 transition-all active:scale-95"
+        >
+          <Phone size={16} /> Call
+        </a>
+        <a
+          href={`https://wa.me/${donor.phone?.replace(/\D/g,'')}`}
+          target="_blank"
+          rel="noreferrer"
+          className="w-12 h-12 bg-white text-slate-400 border border-slate-200 rounded-2xl flex items-center justify-center hover:bg-emerald-50 hover:text-emerald-500 hover:border-emerald-100 transition-all active:scale-95"
+        >
+          <MessageCircle size={20} />
+        </a>
+        <button className="w-12 h-12 bg-white text-slate-400 border border-slate-200 rounded-2xl flex items-center justify-center hover:bg-slate-50 transition-all active:scale-95">
+          <MoreVertical size={20} />
+        </button>
       </div>
     </div>
   )

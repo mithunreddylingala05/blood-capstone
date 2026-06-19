@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Droplets, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Droplets, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import toast from 'react-hot-toast'
 
@@ -18,79 +18,79 @@ export default function LoginPage() {
     const ok = await login(email.trim(), password)
     setLoading(false)
     if (ok) {
-      navigate('/', { replace: true })
+      navigate('/home', { replace: true })
     } else {
       toast.error('Invalid email or password')
     }
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col w-full max-w-7xl mx-auto px-6">
-      {/* Header */}
-      <div className="pt-16 pb-10 flex flex-col items-center">
-        <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-5">
-          <Droplets size={40} className="text-primary" />
-        </div>
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Welcome Back</h1>
-        <p className="text-gray-500 mt-2 text-center text-sm">Sign in to save lives today</p>
-      </div>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1.5 ml-1">Email Address</label>
-          <div className="relative">
-            <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition text-sm"
-            />
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center px-6 pt-16">
+      <div className="w-full max-w-sm">
+        {/* Header */}
+        <div className="flex flex-col items-center mb-12">
+          <div className="w-20 h-20 bg-primary rounded-3xl flex items-center justify-center mb-8 rotate-12 shadow-hero">
+            <Droplets size={40} className="text-white" />
           </div>
+          <h1 className="text-3xl font-heading text-slate-900 leading-none">Welcome</h1>
+          <p className="text-slate-400 mt-2 text-center text-sm font-medium">Continue your life-saving journey</p>
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-gray-600 mb-1.5 ml-1">Password</label>
-          <div className="relative">
-            <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type={showPass ? 'text' : 'password'}
-              required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder="Enter password"
-              className="w-full pl-11 pr-12 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition text-sm"
-            />
-            <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-              {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+        {/* Form Card */}
+        <div className="bg-white p-8 rounded-[40px] shadow-card border border-slate-100">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+              <div className="relative">
+                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  className="w-full pl-12 pr-4 py-4 bg-slate-50 rounded-2xl text-slate-900 placeholder-slate-300 focus:outline-none ring-primary/20 focus:ring-4 transition-all text-sm font-medium border-0"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
+              <div className="relative">
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-12 pr-12 py-4 bg-slate-50 rounded-2xl text-slate-900 placeholder-slate-300 focus:outline-none ring-primary/20 focus:ring-4 transition-all text-sm font-medium border-0"
+                />
+                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
+                  {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-slate-900 text-white py-5 rounded-2xl font-bold text-lg mt-2 hover:bg-slate-800 transition-all disabled:opacity-60 shadow-subtle flex items-center justify-center gap-2 group"
+            >
+              {loading ? 'Authenticating...' : 'Sign In'}
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
-          </div>
+          </form>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-primary text-white py-4 rounded-2xl font-bold text-base mt-2 hover:bg-primary-dark transition-colors disabled:opacity-60 shadow-lg shadow-red-200"
-        >
-          {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-              Signing in...
-            </span>
-          ) : 'Sign In →'}
-        </button>
-      </form>
-
-      <div className="text-center mt-8 text-sm text-gray-500">
-        Don't have an account?{' '}
-        <Link to="/register" className="text-primary font-bold">Create one</Link>
+        <div className="text-center mt-10 text-sm text-slate-400 font-medium">
+          New to the community?{' '}
+          <Link to="/register" className="text-primary font-bold hover:underline">Create Account</Link>
+        </div>
       </div>
-
-      <p className="mt-auto pb-8 text-center text-xs text-gray-400">
-        🔒 Secure & Encrypted Login
+      
+      <p className="mt-auto pb-10 text-center text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+        Smart Blood Connect 1.0
       </p>
     </div>
   )

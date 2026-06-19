@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Search, SlidersHorizontal, MapPin, X } from 'lucide-react'
+import { Search, SlidersHorizontal, MapPin, X, Filter, Check } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
 import { useRequestStore } from '../../store/requestStore'
 import { BLOOD_GROUPS } from '../../utils/constants'
@@ -56,122 +56,136 @@ export default function BloodSearchPage() {
   })
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-slate-50 pb-32">
       {/* Header */}
-      <div className="bg-primary px-5 pt-14 pb-5">
-        <h1 className="text-white text-2xl font-black mb-1">Blood Search</h1>
-        <p className="text-white/70 text-sm">Find donors, hospitals & blood banks</p>
+      <div className="bg-white px-6 pt-16 pb-12 border-b border-slate-100 relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-20 bg-primary/5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
+        <div className="max-w-4xl mx-auto relative z-10">
+            <h1 className="text-3xl font-heading text-slate-900 mb-2">Find Help</h1>
+            <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">Connected Network of Life Savers</p>
+        </div>
       </div>
 
-      <div className="px-4 py-5 flex flex-col gap-5">
-        {/* Search bar */}
-        <div className="flex gap-2">
-          <div className="flex-1 relative">
-            <MapPin size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              value={city}
-              onChange={e => setCity(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && doSearch()}
-              placeholder="Enter city or area..."
-              className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
-            />
-          </div>
-          <button onClick={() => doSearch()}
-            className="bg-primary text-white px-5 rounded-2xl font-bold flex items-center gap-2 hover:bg-primary-dark transition-colors">
-            <Search size={17} />
-          </button>
-        </div>
-
-        {/* Filter chips */}
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          {FILTERS.map(f => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap border transition-all ${filter === f ? 'bg-primary text-white border-primary' : 'bg-white text-gray-600 border-gray-200'}`}>
-              {f}
+      <div className="max-w-xl mx-auto px-6 py-10 space-y-8 animate-fade-in">
+        {/* Search Input Card */}
+        <div className="bg-white p-2 rounded-[32px] shadow-card border border-slate-100 flex items-center pr-4">
+            <div className="flex-1 relative">
+                <MapPin size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
+                <input
+                    value={city}
+                    onChange={e => setCity(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && doSearch()}
+                    placeholder="Enter city or area..."
+                    className="w-full pl-14 pr-6 py-5 bg-transparent text-slate-900 placeholder-slate-300 focus:outline-none text-sm font-medium border-0"
+                />
+            </div>
+            <button onClick={() => doSearch()} className="w-12 h-12 bg-primary rounded-2xl flex items-center justify-center text-white shadow-hero hover:scale-105 transition-all active:scale-95">
+                <Search size={22} />
             </button>
-          ))}
-          <button onClick={() => setAvailableOnly(!availableOnly)}
-            className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap border transition-all ${availableOnly ? 'bg-green-600 text-white border-green-600' : 'bg-white text-gray-600 border-gray-200'}`}>
-            ● Available Only
-          </button>
         </div>
 
-        {/* Blood group selector */}
-        {searched && (
-          <div>
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Filter by Blood Group</p>
-            <div className="flex flex-wrap gap-2">
-              {BLOOD_GROUPS.map(g => (
-                <button key={g} onClick={() => selectGroup(g)}
-                  className={`w-14 h-10 rounded-xl text-sm font-black border transition-all ${selectedGroup === g ? 'bg-primary text-white border-primary' : 'bg-gray-50 text-gray-800 border-gray-100'}`}>
-                  {g}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!searched && (
-          <div className="flex flex-col items-center text-center py-16">
-            <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-4">
-              <Search size={36} className="text-primary" />
-            </div>
-            <h3 className="font-black text-gray-800 text-lg mb-2">Search for Blood</h3>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Enter a city or area above to find registered donors and available blood stock near you.
-            </p>
-          </div>
-        )}
-
-        {/* Results */}
-        {searched && (
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <p className="font-black text-gray-900">{filtered.length} Results Found</p>
-              <button onClick={() => setShowSort(true)}
-                className="flex items-center gap-1.5 bg-red-50 text-primary px-3 py-1.5 rounded-xl text-xs font-bold">
-                <SlidersHorizontal size={13} />
-                Sort: {SORT_OPTIONS.find(s => s.key === sortBy)?.label}
-              </button>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12">
-                <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-              </div>
-            ) : filtered.length === 0 ? (
-              <div className="bg-gray-50 rounded-2xl p-8 flex flex-col items-center text-center">
-                <p className="font-bold text-gray-700 mb-1">No Results Found</p>
-                <p className="text-gray-400 text-sm">Try a different city or blood group</p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3">
-                {filtered.map((d, i) => (
-                  <DonorCard key={d.id} donor={d} isClosest={i === 0} />
+        {/* Global Filters */}
+        <div className="space-y-4">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 px-1">
+                {FILTERS.map(f => (
+                    <button key={f} onClick={() => setFilter(f)}
+                    className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest whitespace-nowrap border transition-all ${filter === f ? 'bg-slate-900 text-white border-slate-900 shadow-subtle' : 'bg-white text-slate-400 border-slate-100 hover:border-slate-300'}`}>
+                    {f}
+                    </button>
                 ))}
-              </div>
-            )}
-          </div>
+            </div>
+            
+            <div className="flex items-center justify-between px-1">
+                <button onClick={() => setAvailableOnly(!availableOnly)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${availableOnly ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'text-slate-400'}`}>
+                    <div className={`w-2 h-2 rounded-full ${availableOnly ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`} />
+                    Available Only
+                </button>
+                <button onClick={() => setShowSort(true)} className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-slate-900 transition-colors">
+                    <SlidersHorizontal size={14} /> Sort: {SORT_OPTIONS.find(s => s.key === sortBy)?.label}
+                </button>
+            </div>
+        </div>
+
+        {/* Blood Group Quick Select */}
+        <div className="px-1">
+             <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4 ml-1">Select Blood Group</p>
+             <div className="grid grid-cols-4 gap-2">
+               {BLOOD_GROUPS.map(g => (
+                 <button key={g} onClick={() => selectGroup(g)}
+                   className={`h-12 rounded-2xl text-xs font-black border transition-all ${selectedGroup === g ? 'bg-primary text-white border-primary shadow-hero' : 'bg-white text-slate-500 border-slate-100 hover:bg-slate-50'}`}>
+                   {g}
+                 </button>
+               ))}
+             </div>
+        </div>
+
+        {/* Results Info */}
+        {searched && (
+            <div className="space-y-6 pt-4">
+                <div className="flex items-center justify-between px-1">
+                    <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">{filtered.length} Local Results</h2>
+                </div>
+
+                {loading ? (
+                    <div className="py-20 flex flex-col items-center justify-center text-center space-y-4">
+                        <div className="w-10 h-10 border-4 border-slate-100 border-t-primary rounded-full animate-spin" />
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Searching Network...</p>
+                    </div>
+                ) : filtered.length === 0 ? (
+                    <div className="py-20 flex flex-col items-center justify-center text-center space-y-4 bg-white rounded-[40px] border border-dashed border-slate-200">
+                      <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center">
+                        <Filter size={32} className="text-slate-200" />
+                      </div>
+                      <p className="text-slate-400 text-sm font-medium">No results found for your criteria</p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        {filtered.map((d) => (
+                            <DonorCard key={d.id} donor={d} />
+                        ))}
+                    </div>
+                )}
+            </div>
+        )}
+
+        {/* Initial Empty State */}
+        {!searched && (
+            <div className="py-20 flex flex-col items-center justify-center text-center space-y-6">
+                <div className="relative">
+                    <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
+                    <Search size={64} className="text-slate-100 relative z-10" />
+                </div>
+                <div className="space-y-2">
+                    <h3 className="text-lg font-heading text-slate-900 leading-tight">Start Search</h3>
+                    <p className="text-slate-400 text-xs font-medium max-w-[200px] mx-auto">Results will appear here once you enter a location</p>
+                </div>
+            </div>
         )}
       </div>
 
-      {/* Sort bottom sheet */}
+      {/* Sort Modal */}
       {showSort && (
-        <div className="fixed inset-0 z-50 flex items-end" onClick={() => setShowSort(false)}>
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="relative w-full bg-white rounded-t-3xl p-6 w-full max-w-7xl mx-auto" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="font-black text-gray-900 text-lg">Sort By</h3>
-              <button onClick={() => setShowSort(false)}><X size={20} className="text-gray-400" /></button>
+        <div className="fixed inset-0 z-[60] flex items-end justify-center px-4 pb-4 sm:pb-8">
+            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-fade-in" onClick={() => setShowSort(false)} />
+            <div className="relative w-full max-w-sm bg-white rounded-[40px] p-8 shadow-hero animate-slide-up overflow-hidden">
+                <div className="flex items-center justify-between mb-8">
+                    <h3 className="text-xl font-heading text-slate-900">Sort By</h3>
+                    <button onClick={() => setShowSort(false)} className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                        <X size={20} />
+                    </button>
+                </div>
+                
+                <div className="space-y-2">
+                    {SORT_OPTIONS.map(opt => (
+                        <button key={opt.key} onClick={() => applySort(opt.key)}
+                            className={`w-full text-left py-4 px-6 rounded-2xl font-bold text-sm flex items-center justify-between transition-all ${sortBy === opt.key ? 'bg-primary/5 text-primary border border-primary/10' : 'text-slate-600 hover:bg-slate-50 border border-transparent'}`}>
+                            {opt.label}
+                            {sortBy === opt.key && <Check size={18} />}
+                        </button>
+                    ))}
+                </div>
             </div>
-            {SORT_OPTIONS.map(opt => (
-              <button key={opt.key} onClick={() => applySort(opt.key)}
-                className={`w-full text-left py-3.5 px-4 rounded-xl mb-2 font-semibold text-sm transition-all ${sortBy === opt.key ? 'bg-red-50 text-primary' : 'text-gray-700 hover:bg-gray-50'}`}>
-                {sortBy === opt.key ? '✓ ' : ''}{opt.label}
-              </button>
-            ))}
-          </div>
         </div>
       )}
     </div>
